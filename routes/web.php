@@ -1,0 +1,112 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StrukController;
+use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\QrisController;
+
+// ADMIN
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\TransactionAdminController;
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+require __DIR__.'/auth.php';
+
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    /*
+    |-------------------------
+    | ROLE REDIRECT
+    |-------------------------
+    */
+    Route::get('/redirect', function () {
+
+        $user = auth()->user();
+
+        return $user->role === 'admin'
+            ? redirect('/admin')
+            : redirect('/kasir');
+    });
+
+    /*
+    |-------------------------
+    | KASIR
+    |-------------------------
+    */
+    Route::get('/kasir', function () {
+        return view('kasir');
+    });
+
+    Route::post('/transactions', [TransactionController::class, 'store']);
+
+    /*
+    |-------------------------
+    | ADMIN AREA (FIXED PREFIX 🔥)
+    |-------------------------
+    */
+    Route::prefix('admin')->group(function () {
+
+        // dashboard
+        Route::get('/', [DashboardController::class, 'index']);
+        Route::get('/chart-data', [DashboardController::class, 'chartData']);
+
+        // menu
+        Route::get('/menu', [MenuController::class, 'index']);
+        Route::post('/menu/store', [MenuController::class, 'store']);
+        Route::delete('/menu/{id}', [MenuController::class, 'destroy']);
+
+        // transaksi
+        Route::get('/transactions', [TransactionAdminController::class, 'index']);
+        Route::get('/transactions/{id}', [TransactionAdminController::class, 'show']);
+
+        // report
+        Route::get('/report', [ReportController::class, 'index']);
+        Route::get('/report/pdf', [ReportController::class, 'exportPdf']);
+    });
+
+    /*
+    |-------------------------
+    | STRUK
+    |-------------------------
+    */
+    Route::get('/struk/{id}', [StrukController::class, 'show']);
+    Route::get('/struk/{id}/pdf', [StrukController::class, 'pdf']);
+
+    Route::get('/qris/{id}', [QrisController::class, 'show']);
+
+    /*
+    |-------------------------
+    | LOGOUT
+    |-------------------------
+    */
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
+
+    /*
+    |-------------------------
+    | PROFILE
+    |-------------------------
+    */  
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update']);
+    Route::delete('/profile', [ProfileController::class, 'destroy']);
+});
