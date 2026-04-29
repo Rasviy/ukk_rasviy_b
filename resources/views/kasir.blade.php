@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>POS Cafe | Kasir Modern</title>
+    <title>CafeInAja</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -120,7 +120,6 @@
             transform: translateY(-2px);
         }
 
-        /* Modal animation */
         @keyframes modalFadeIn {
             from {
                 opacity: 0;
@@ -140,14 +139,13 @@
 
 <div class="flex h-screen overflow-hidden shadow-2xl">
 
-    <!-- LEFT PANEL -->
     <div class="w-2/3 flex flex-col bg-gray-50">
 
         <!-- TOPBAR dengan tombol logout -->
         <div class="bg-gradient-to-r from-[#1e3a2f] to-[#2c5a3b] text-white px-8 py-5 flex justify-between items-center shadow-md">
             <div class="flex items-center gap-3">
                 <i class="fas fa-mug-hot text-2xl"></i>
-                <h1 class="font-bold text-2xl tracking-wide">CUMAcafe</h1>
+                <h1 class="font-bold text-2xl tracking-wide">CafeInAja</h1>
             </div>
             <div class="flex items-center gap-4">
                 <div class="relative">
@@ -168,23 +166,6 @@
             <div id="menu-list"
                 class="grid grid-cols-3 lg:grid-cols-4 gap-7 auto-rows-max"></div>
         </div>
-
-        <!-- CATEGORY BUTTONS -->
-        <div class="bg-white px-8 py-5 flex gap-5 border-t border-gray-200 shadow-inner">
-            <button onclick="filterMenu('all', event)" class="cat-btn active">
-                <i class="fas fa-"></i> Semua
-            </button>
-            <button onclick="filterMenu('minuman', event)" class="cat-btn">
-                <i class="fas fa-coffee"></i> Coffee
-            </button>
-            <button onclick="filterMenu('minuman', event)" class="cat-btn">
-                <i class="fas fa-mug-saucer"></i> Tea
-            </button>
-            <button onclick="filterMenu('desert', event)" class="cat-btn">
-                <i class="fas fa-ice-cream"></i> Desserts
-            </button>
-        </div>
-
     </div>
 
 
@@ -226,21 +207,10 @@
                 class="w-full bg-gradient-to-r from-[#1e3a2f] to-[#2c5a3b] hover:from-[#153728] hover:to-[#1f4735] text-white py-3.5 rounded-2xl font-bold text-lg shadow-lg transition duration-200 flex items-center justify-center gap-3">
                 <i class="fas fa-receipt"></i> Bayar Sekarang
             </button>
-
-            <!-- Cancel & Hold Order -->
-            <div class="flex gap-3 mt-4 text-sm text-center">
-                <div class="flex-1 bg-gray-100 rounded-xl py-2 text-gray-500 cursor-pointer hover:bg-gray-200 transition" onclick="if(cart.length>0){let sure=confirm('Cancel order?'); if(sure) {cart=[]; renderCart();}}else{alert('Keranjang kosong')}">
-                    <i class="fas fa-times-circle"></i> Cancel Order
-                </div>
-                <div class="flex-1 bg-gray-100 rounded-xl py-2 text-gray-500 cursor-pointer hover:bg-gray-200 transition" onclick="if(cart.length>0){alert('Order disimpan sementara (Hold)');}else{alert('Tidak ada pesanan')}">
-                    <i class="fas fa-pause-circle"></i> Hold Order
-                </div>
-            </div>
         </div>
 
     </div>
 
-    <!-- PAYMENT MODAL (RINGKAS & SIMPLE) -->
     <div id="paymentModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
         <div class="modal-content bg-white rounded-2xl p-6 w-[400px] max-w-[90%] shadow-2xl">
             

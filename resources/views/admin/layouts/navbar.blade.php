@@ -14,11 +14,11 @@
 
         <!-- Navigation Menu -->
         <nav class="flex-1 px-4 py-6 space-y-2">
-            <a href="/admin" class="sidebar-link {{ request()->is('admin') ? 'active' : '' }}">
+            <a href="/admin/dashboard" class="sidebar-link {{ request()->is('admin') ? 'active' : '' }}">
                 <i class="fas fa-chart-line w-5"></i>
                 <span>Dashboard</span>
             </a>
-            
+
             <a href="/admin/menu" class="sidebar-link {{ request()->is('admin/menu') ? 'active' : '' }}">
                 <i class="fas fa-utensils w-5"></i>
                 <span>Menu Items</span>
@@ -33,19 +33,9 @@
                 <i class="fas fa-file-alt w-5"></i>
                 <span>Laporan</span>
             </a>
-            
-            <a href="/admin/users" class="sidebar-link {{ request()->is('admin/users') ? 'active' : '' }}">
-                <i class="fas fa-users w-5"></i>
-                <span>Users</span>
-            </a>
-            
-            <a href="/admin/settings" class="sidebar-link {{ request()->is('admin/settings') ? 'active' : '' }}">
-                <i class="fas fa-cog w-5"></i>
-                <span>Settings</span>
-            </a>
         </nav>
 
-        <!-- User Info & Logout -->
+        
         <div class="p-4 border-t border-white/20">
             <div class="flex items-center gap-3 mb-4">
                 <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">

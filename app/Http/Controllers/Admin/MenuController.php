@@ -26,7 +26,7 @@ class MenuController extends Controller
     $imagePath = null;
 
     if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('menu', 'public');
+        $imagePath = $request->file('image')->store('menus', 'public');
     }
 
     Menu::create([
