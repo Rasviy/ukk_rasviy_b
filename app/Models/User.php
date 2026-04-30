@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // 🔥 PENTING INI HARUS ADA
+        'role', 
     ];
 
     protected $hidden = [
@@ -26,7 +26,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            // ⚠️ HAPUS "hashed" biar tidak double hash
+            
         ];
     }
 }

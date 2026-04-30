@@ -145,12 +145,6 @@
                         <span>Filter</span>
                     </button>
                     
-                    <a href="/admin/report/pdf?from={{ request('from') }}&to={{ request('to') }}"
-                       class="bg-red-500 hover:bg-red-600 text-white px-6 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 shadow-sm">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>Export PDF</span>
-                    </a>
-                    
                     @if(request('from') || request('to'))
                     <a href="/admin/report"
                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2">

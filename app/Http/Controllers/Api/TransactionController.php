@@ -9,35 +9,44 @@ use App\Models\LogActivity;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-// 🔥 IMPORT OOP
 use App\Services\CashPayment;
 use App\Services\QRISPayment;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
     public function store(Request $request)
-    {
-        $request->validate([
-            'items' => 'required|array',
-            'payment_method' => 'required'
-        ]);
+{
+    $request->validate([
+        'items' => 'required|array',
+        'payment_method' => 'required|in:cash,qris',
+        'customer_name' => 'nullable|string|max:100'
+    ]);
 
-        // buat transaksi
-       $transaction = Transaction::create([
-    'user_id' => auth()->id(),
-    'tanggal' => now(),
-    'total' => 0,
-    'tax' => 0,
-    'payment_method' => $request->payment_method,
-    'uang_bayar' => $request->uang_bayar ?? 0,
-    'kembalian' => $request->kembalian ?? 0,
-]);
+    DB::beginTransaction();
+
+    try {
+
+        $transaction = Transaction::create([
+            'user_id' => auth()->id(),
+            'tanggal' => now(),
+            'total' => 0,
+            'tax' => 0,
+            'payment_method' => $request->payment_method,
+            'uang_bayar' => $request->uang_bayar ?? 0,
+            'kembalian' => $request->kembalian ?? 0,
+            'customer_name' => $request->customer_name ?? 'Guest',
+        ]);
 
         $total = 0;
 
         foreach ($request->items as $item) {
 
-            $menu = Menu::findOrFail($item['menu_id']);
+            $menu = Menu::lockForUpdate()->findOrFail($item['menu_id']);
+
+            if ($menu->stok < $item['qty']) {
+                throw new \Exception("Stok {$menu->nama_menu} tidak cukup!");
+            }
 
             $subtotal = $menu->harga * $item['qty'];
 
@@ -49,44 +58,54 @@ class TransactionController extends Controller
                 'subtotal' => $subtotal
             ]);
 
+            $menu->stok -= $item['qty'];
+            $menu->save();
+
             $total += $subtotal;
         }
 
-        // 🔥 FIX UTAMA: cast ke integer biar ga 0
-        $tax = (int) ($total * 0.050); // 2.0% tax, bisa diubah sesuai kebutuhan
+        
+        $tax = (int) ($total * 0.05);
 
-        // update total + tax
+        $grandTotal = $total + $tax;
+
         $transaction->update([
             'tax' => $tax,
-            'total' => $total + $tax,
+            'total' => $grandTotal,
             'uang_bayar' => $request->uang_bayar ?? 0,
             'kembalian' => $request->kembalian ?? 0,
         ]);
 
-        // OOP payment
-        $paymentType = $request->payment_method;
+        
+        $payment = $request->payment_method == 'cash'
+            ? new CashPayment()
+            : new QRISPayment();
 
-        if ($paymentType == 'cash') {
-            $payment = new CashPayment();
-        } else {
-            $payment = new QRISPayment();
-        }
+        $payment->pay($grandTotal);
 
-        // kirim total yang sudah include tax
-        $hasilBayar = $payment->pay($total + $tax);
-
-        // log activity
+        
         if (auth()->check()) {
             LogActivity::create([
                 'user_id' => auth()->id(),
-                'aktivitas' => 'Membuat transaksi',
+                'aktivitas' => 'Membuat transaksi #' . $transaction->id,
                 'waktu' => now()
             ]);
         }
+
+        DB::commit();
 
         return response()->json([
             'message' => 'success',
             'transaction_id' => $transaction->id
         ]);
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return response()->json([
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
 }

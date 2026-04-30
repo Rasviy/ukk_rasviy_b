@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,14 +16,17 @@
             width: 6px;
             height: 6px;
         }
+
         ::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
@@ -32,6 +36,7 @@
             transition: all 0.3s ease;
             border-left: 4px solid;
         }
+
         .stat-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.15);
@@ -41,6 +46,7 @@
         .chart-container {
             transition: all 0.3s ease;
         }
+
         .chart-container:hover {
             box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.1);
         }
@@ -51,35 +57,47 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
         .stat-card {
             animation: fadeInUp 0.5s ease forwards;
         }
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
-        
+
+        .stat-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .stat-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .stat-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .stat-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
         /* Active page indicator */
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #f3f4f6 100%);
         }
     </style>
 </head>
+
 <body class="font-sans antialiased">
 
-    <!-- PANGGIL SIDEBAR NAVBAR -->
     @include('admin.layouts.navbar')
 
-    <!-- MAIN CONTENT (dengan margin left sesuai sidebar) -->
     <div class="ml-64 min-h-screen">
         <div class="p-6 max-w-7xl mx-auto">
 
-            <!-- Header dengan breadcrumb -->
             <div class="mb-6">
                 <div class="flex justify-between items-center">
                     <div>
@@ -89,17 +107,16 @@
                         </h1>
                         <p class="text-gray-500 mt-1">Welcome back, Admin! Here's your sales summary</p>
                     </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm">
+                    <div
+                        class="flex items-center gap-2 text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm">
                         <i class="fas fa-calendar-alt text-green-600"></i>
                         <span id="currentDate"></span>
                     </div>
                 </div>
             </div>
 
-            <!-- STATISTIK CARD (4 card) dengan warna berbeda -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                
-                <!-- Total Sales Card -->
+
                 <div class="stat-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-green-600">
                     <div class="flex justify-between items-start">
                         <div>
@@ -115,7 +132,7 @@
                     </div>
                 </div>
 
-                <!-- Transaksi Card -->
+                
                 <div class="stat-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-blue-600">
                     <div class="flex justify-between items-start">
                         <div>
@@ -131,7 +148,7 @@
                     </div>
                 </div>
 
-                <!-- Produk Terjual Card -->
+                
                 <div class="stat-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-purple-600">
                     <div class="flex justify-between items-start">
                         <div>
@@ -147,7 +164,7 @@
                     </div>
                 </div>
 
-                <!-- Produk Tidak Laku Card -->
+                
                 <div class="stat-card bg-white rounded-2xl shadow-md p-6 border-l-4 border-red-600">
                     <div class="flex justify-between items-start">
                         <div>
@@ -165,7 +182,6 @@
 
             </div>
 
-            <!-- GRAFIK PENJUALAN -->
             <div class="chart-container bg-white rounded-2xl shadow-lg p-6 mb-8">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="font-bold text-gray-800 text-xl flex items-center gap-2">
@@ -173,107 +189,17 @@
                         Grafik Penjualan
                     </h3>
                     <div class="flex gap-2">
-                        <button class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition">Harian</button>
-                        <button class="text-xs bg-green-600 text-white px-3 py-1 rounded-full transition">Mingguan</button>
-                        <button class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition">Bulanan</button>
+                        <button onclick="loadChart('harian')"
+                            class="text-xs bg-gray-100 px-3 py-1 rounded-full">Harian</button>
+                        <button onclick="loadChart('mingguan')"
+                            class="text-xs bg-green-600 text-white px-3 py-1 rounded-full">Mingguan</button>
+                        <button onclick="loadChart('bulanan')"
+                            class="text-xs bg-gray-100 px-3 py-1 rounded-full">Bulanan</button>
                     </div>
                 </div>
                 <canvas id="salesChart" class="max-h-96"></canvas>
             </div>
 
-            <!-- INFORMASI TAMBAHAN -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Recent Transactions -->
-                <div class="bg-white rounded-2xl shadow-md p-6">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="fas fa-clock text-green-700"></i>
-                        <h4 class="font-bold text-gray-800">Recent Transactions</h4>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center text-sm border-b pb-2">
-                            <div>
-                                <span class="text-gray-600 font-medium">#INV-2024-001</span>
-                                <p class="text-xs text-gray-400">Cash payment</p>
-                            </div>
-                            <span class="font-semibold text-gray-800">Rp 125.000</span>
-                            <span class="text-gray-400 text-xs">10 min ago</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm border-b pb-2">
-                            <div>
-                                <span class="text-gray-600 font-medium">#INV-2024-002</span>
-                                <p class="text-xs text-gray-400">QRIS payment</p>
-                            </div>
-                            <span class="font-semibold text-gray-800">Rp 89.000</span>
-                            <span class="text-gray-400 text-xs">25 min ago</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm border-b pb-2">
-                            <div>
-                                <span class="text-gray-600 font-medium">#INV-2024-003</span>
-                                <p class="text-xs text-gray-400">Cash payment</p>
-                            </div>
-                            <span class="font-semibold text-gray-800">Rp 210.000</span>
-                            <span class="text-gray-400 text-xs">1 hour ago</span>
-                        </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <div>
-                                <span class="text-gray-600 font-medium">#INV-2024-004</span>
-                                <p class="text-xs text-gray-400">QRIS payment</p>
-                            </div>
-                            <span class="font-semibold text-gray-800">Rp 340.000</span>
-                            <span class="text-gray-400 text-xs">2 hours ago</span>
-                        </div>
-                    </div>
-                    <div class="mt-4 text-center">
-                        <a href="/admin/transactions" class="text-green-600 text-sm hover:text-green-700 font-medium">View all transactions →</a>
-                    </div>
-                </div>
-
-                <!-- Top Products -->
-                <div class="bg-white rounded-2xl shadow-md p-6">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="fas fa-trophy text-yellow-600"></i>
-                        <h4 class="font-bold text-gray-800">Best Selling Products</h4>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="font-medium text-gray-700">Costa Coffee</span>
-                                <span class="text-gray-600">85 sold</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="font-medium text-gray-700">Mocha/Hot</span>
-                                <span class="text-gray-600">72 sold</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: 72%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="font-medium text-gray-700">Chocolet Latte</span>
-                                <span class="text-gray-600">68 sold</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: 68%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-sm mb-1">
-                                <span class="font-medium text-gray-700">Costa Caramel</span>
-                                <span class="text-gray-600">54 sold</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-green-600 h-2 rounded-full" style="width: 54%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         </div>
     </div>
@@ -282,7 +208,12 @@
         // Display current date
         function updateDate() {
             const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
             const dateElem = document.getElementById('currentDate');
             if (dateElem) {
                 dateElem.innerHTML = now.toLocaleDateString('id-ID', options);
@@ -290,104 +221,117 @@
         }
         updateDate();
 
-        // Chart.js - TIDAK MENGUBAH LOGIKA ASLI
         fetch('/admin/chart-data')
-        .then(r => r.json())
-        .then(data => {
-            new Chart(document.getElementById('salesChart'), {
-                type: 'line',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: 'Penjualan',
-                        data: data.data,
-                        borderColor: '#2c5a3b',
-                        backgroundColor: 'rgba(44, 90, 59, 0.05)',
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#1e3a2f',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 5,
-                        pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: { size: 12, weight: 'bold' },
-                                usePointStyle: true,
-                                boxWidth: 10
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: '#1e3a2f',
-                            titleColor: '#fff',
-                            bodyColor: '#e2e8f0',
-                            callbacks: {
-                                label: function(context) {
-                                    return 'Penjualan: Rp ' + context.raw.toLocaleString('id-ID');
-                                }
-                            }
-                        }
+            .then(r => r.json())
+            .then(data => {
+                new Chart(document.getElementById('salesChart'), {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Penjualan',
+                            data: data.data,
+                            borderColor: '#2c5a3b',
+                            backgroundColor: 'rgba(44, 90, 59, 0.05)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#1e3a2f',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp ' + value.toLocaleString('id-ID');
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    font: {
+                                        size: 12,
+                                        weight: 'bold'
+                                    },
+                                    usePointStyle: true,
+                                    boxWidth: 10
                                 }
                             },
-                            grid: { color: '#e2e8f0' }
+                            tooltip: {
+                                backgroundColor: '#1e3a2f',
+                                titleColor: '#fff',
+                                bodyColor: '#e2e8f0',
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Penjualan: Rp ' + context.raw.toLocaleString('id-ID');
+                                    }
+                                }
+                            }
                         },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error loading chart data:', error);
-            // Fallback data
-            new Chart(document.getElementById('salesChart'), {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-                    datasets: [{
-                        label: 'Penjualan',
-                        data: [5000000, 6500000, 7200000, 8100000, 9500000, 10200000, 11800000, 12500000, 13200000, 14800000, 15900000, 17200000],
-                        borderColor: '#2c5a3b',
-                        backgroundColor: 'rgba(44, 90, 59, 0.05)',
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#1e3a2f',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 5,
-                        pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            ticks: {
-                                callback: function(value) {
-                                    return 'Rp ' + value.toLocaleString('id-ID');
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rp ' + value.toLocaleString('id-ID');
+                                    }
+                                },
+                                grid: {
+                                    color: '#e2e8f0'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
                                 }
                             }
                         }
                     }
-                }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading chart data:', error);
+                // Fallback data
+                new Chart(document.getElementById('salesChart'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov',
+                            'Des'
+                        ],
+                        datasets: [{
+                            label: 'Penjualan',
+                            data: [5000000, 6500000, 7200000, 8100000, 9500000, 10200000, 11800000,
+                                12500000, 13200000, 14800000, 15900000, 17200000
+                            ],
+                            borderColor: '#2c5a3b',
+                            backgroundColor: 'rgba(44, 90, 59, 0.05)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#1e3a2f',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rp ' + value.toLocaleString('id-ID');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
             });
-        });
     </script>
 
 </body>
+
 </html>

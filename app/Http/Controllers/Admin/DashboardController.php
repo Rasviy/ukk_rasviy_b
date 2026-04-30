@@ -11,16 +11,16 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 💰 total uang masuk
+    
         $totalSales = Transaction::sum('total');
 
-        // 🧾 total transaksi
+        
         $totalTransaksi = Transaction::count();
 
-        // 📦 total item terjual
+        
         $totalProduk = TransactionDetail::sum('qty');
 
-        // ❗ produk yang tidak pernah ada di transaksi
+       
         $produkKosong = Menu::whereDoesntHave('transactionDetails')->count();
 
         return view('admin.dashboard', compact(

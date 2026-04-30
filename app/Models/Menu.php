@@ -12,7 +12,8 @@ class Menu extends Model
         'nama_menu',
         'harga',
         'image',
-        'category_id' // 🔥 wajib juga biar aman
+        'category_id',
+        'stok'
     ];
 
     public function category()
@@ -20,7 +21,6 @@ class Menu extends Model
         return $this->belongsTo(Category::class);
     }
 
-    // 🔥 PAKAI SATU RELASI SAJA
     public function transactionDetails()
     {
         return $this->hasMany(TransactionDetail::class);

@@ -7,9 +7,17 @@ use App\Models\User;
 
 class LogActivity extends Model
 {
-    protected $fillable = ['user_id','aktivitas','waktu'];
+    protected $fillable = [
+        'user_id',
+        'aktivitas',
+        'detail',
+        'waktu'
+    ];
 
-    public function user(){
+    public $timestamps = false;
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

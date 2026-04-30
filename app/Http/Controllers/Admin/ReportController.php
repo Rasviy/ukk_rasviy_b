@@ -9,27 +9,26 @@ use App\Models\Transaction;
 class ReportController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Transaction::with('details.menu');
+{
+    $query = Transaction::with('details');
 
-        if ($request->start_date && $request->end_date) {
-            $query->whereBetween('created_at', [
-                $request->start_date,
-                $request->end_date
-            ]);
-        }
-
-        $transactions = $query->latest()->get();
-
-        $totalTransaction = $transactions->count();
-
-        // 🔥 GUNAKAN SATU SAJA (BIAR GA BINGUNG)
-        $totalIncome = $transactions->sum('total');
-
-        return view('admin.report', compact(
-            'transactions',
-            'totalTransaction',
-            'totalIncome' // ✅ FIX DI SINI
-        ));
+    if ($request->from && $request->to) {
+        $query->whereBetween('created_at', [
+            $request->from . ' 00:00:00',
+            $request->to . ' 23:59:59'
+        ]);
+    } elseif ($request->from) {
+        $query->whereDate('created_at', '>=', $request->from);
+    } elseif ($request->to) {
+        $query->whereDate('created_at', '<=', $request->to);
     }
+
+    $transactions = $query->latest()->get();
+
+    return view('admin.report', [
+        'transactions' => $transactions,
+        'totalTransaction' => $transactions->count(),
+        'totalIncome' => $transactions->sum('total'),
+    ]);
+}
 }

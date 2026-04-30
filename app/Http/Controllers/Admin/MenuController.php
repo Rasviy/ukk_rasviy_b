@@ -16,34 +16,35 @@ class MenuController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'nama_menu' => 'required',
-        'harga' => 'required|numeric',
-        'image' => 'nullable|image|mimes:jpg,png,jpeg'
-    ]);
+    {
+        $request->validate([
+            'nama_menu' => 'required|string|max:100',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+        ]);
 
-    $imagePath = null;
+        $imagePath = null;
 
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('menus', 'public');
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('menus', 'public');
+        }
+
+        Menu::create([
+            'nama_menu'   => $request->nama_menu,
+            'harga'       => $request->harga,
+            'stok'        => $request->stok,
+            'category_id' => 1,
+            'image'       => $imagePath
+        ]);
+
+        return redirect()->back()->with('success', 'Menu berhasil ditambahkan');
     }
-
-    Menu::create([
-        'nama_menu'   => $request->nama_menu,
-        'harga'       => $request->harga,
-        'category_id' => 1, // FIX: wajib selalu ada
-        'image'       => $imagePath
-    ]);
-
-    return redirect()->back()->with('success', 'Menu berhasil ditambahkan');
-}
 
     public function destroy($id)
     {
         $menu = Menu::findOrFail($id);
 
-        // 🔥 optional: hapus file gambar juga
         if ($menu->image) {
             Storage::disk('public')->delete($menu->image);
         }
@@ -52,4 +53,33 @@ class MenuController extends Controller
 
         return redirect()->back()->with('success', 'Menu dihapus');
     }
+    public function edit($id)
+    {
+        $menu = Menu::findOrFail($id);
+        return view('admin.menu.edit', compact('menu'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_menu' => 'required|string|max:100',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('menu', 'public');
+            $menu->image = $path;
+        }
+
+        $menu = Menu::findOrFail($id);
+
+    $menu->update([
+        'nama_menu' => $request->nama_menu,
+        'harga' => $request->harga,
+        'stok' => $request->stok,
+    ]);
+
+    return redirect()->back()->with('success', 'Menu berhasil diupdate');
+}
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\TransactionAdminController;
+use App\Http\Controllers\Admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Route::get('/', function () {
 });
 
 // auth bawaan laravel (login, register, dll)
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -69,11 +70,15 @@ Route::middleware('auth')->group(function () {
         // dashboard
         Route::get('/dashboard', [DashboardController::class, 'index']);
         Route::get('/chart-data', [DashboardController::class, 'chartData']);
+        Route::get('/log-activity', [App\Http\Controllers\Admin\LogActivityController::class, 'index']);
 
+        // menu
         // menu
         Route::get('/menu', [MenuController::class, 'index']);
         Route::post('/menu/store', [MenuController::class, 'store']);
         Route::delete('/menu/{id}', [MenuController::class, 'destroy']);
+        Route::get('/menu/{id}/edit', [MenuController::class, 'edit']);
+        Route::put('/menu/{id}', [MenuController::class, 'update']);
 
         // transaksi
         Route::get('/transactions', [TransactionAdminController::class, 'index']);
@@ -82,6 +87,12 @@ Route::middleware('auth')->group(function () {
         // report
         Route::get('/report', [ReportController::class, 'index']);
         Route::get('/report/pdf', [ReportController::class, 'exportPdf']);
+    });
+
+    Route::prefix('admin')->middleware(['auth'])->group(function () {
+        Route::get('/users', [UserController::class, 'index']);
+        Route::post('/users', [UserController::class, 'store']);
+        Route::resource('users', UserController::class);
     });
 
     /*
